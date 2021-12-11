@@ -1,6 +1,6 @@
 import AoC_Helpers
 
-let numbers = input().lines().map { Int($0)! }
+let numbers = input().lines().asInts()
 
 let increaseCount = zip(numbers, numbers.dropFirst()).count(where: <)
 print(increaseCount, "increases")

@@ -11,3 +11,9 @@ extension String {
 		split(separator: "\n", omittingEmptySubsequences: false).dropLast()
 	}
 }
+
+extension Sequence where Element: StringProtocol {
+	public func asInts() -> [Int] {
+		map { Int($0)! }
+	}
+}

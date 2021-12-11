@@ -33,3 +33,14 @@ extension Collection where Element: Collection, Index == Element.Index {
 		first!.indices.map { i in map { $0[i] } }
 	}
 }
+
+extension MutableCollection {
+	public mutating func forEachMutate(_ transform: (inout Element) -> Void) {
+		// can't use self.indices because that might keep a reference to self, preventing copy-on-write!
+		var index = startIndex
+		while index != endIndex {
+			transform(&self[index])
+			index = self.index(after: index)
+		}
+	}
+}

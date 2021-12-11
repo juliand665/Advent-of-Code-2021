@@ -87,6 +87,24 @@ public struct Matrix<Element> {
 	}
 }
 
+extension Matrix: CustomStringConvertible {
+	public var description: String {
+		let descriptions = self.map(String.init(describing:))
+		let maxLength = descriptions.map(\.count).max()!
+		let rows = descriptions.rows().map {
+			$0
+				.map { String(repeating: " ", count: maxLength - $0.count) + $0 }
+				.joined(separator: " ")
+		}
+		
+		return """
+		\(type(of: self))(
+		\(rows.map { "\t\($0)" }.joined(separator: "\n"))
+		)
+		"""
+	}
+}
+
 extension Matrix: RandomAccessCollection {
 	public var startIndex: Vector2 { .zero }
 	
