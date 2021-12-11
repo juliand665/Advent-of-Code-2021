@@ -1,4 +1,3 @@
-import Foundation
 import AoC_Helpers
 
 let numbers = input().lines().map { Int($0)! }
