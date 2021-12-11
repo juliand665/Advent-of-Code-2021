@@ -24,7 +24,7 @@ struct Board {
 		storage
 			.filter { !$0.isMarked }
 			.map(\.number)
-			.reduce(0, +)
+			.sum()
 	}
 }
 

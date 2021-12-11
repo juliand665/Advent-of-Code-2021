@@ -11,7 +11,7 @@ func simulate() {
 }
 
 for _ in 1...80 { simulate() }
-print("after 80 days:", byTimer.reduce(0, +))
+print("after 80 days:", byTimer.sum())
 
 for _ in 81...256 { simulate() }
-print("after 256 days:", byTimer.reduce(0, +))
+print("after 256 days:", byTimer.sum())
