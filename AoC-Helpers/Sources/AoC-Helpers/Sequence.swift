@@ -19,8 +19,12 @@ extension Sequence where Element: Equatable {
 }
 
 extension Sequence where Element: Hashable {
+	public func occurrenceCounts() -> [Element: Int] {
+		Dictionary(lazy.map { ($0, 1) }, uniquingKeysWith: +)
+	}
+	
 	public func mostCommonElement() -> Element? {
-		let counts = Dictionary(lazy.map { ($0, 1) }, uniquingKeysWith: +)
+		let counts = occurrenceCounts()
 		let descending = counts.sorted { -$0.value }
 		guard descending.count > 1 else { return descending.first?.key }
 		guard descending[0].value > descending[1].value else { return nil }

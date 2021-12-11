@@ -69,6 +69,12 @@ extension Vector2: Comparable {
 	}
 }
 
+extension Vector2: CustomStringConvertible {
+	public var description: String {
+		"(\(x), \(y))"
+	}
+}
+
 extension Vector2: Parseable {
 	public init(from parser: inout Parser) {
 		parser.consumeWhitespace()
