@@ -3,11 +3,15 @@ extension Sequence {
 		try lazy.filter(isIncluded).count
 	}
 	
-	func sorted<C>(on accessor: (Element) -> C) -> [Element] where C: Comparable {
+	public func sorted<C>(on accessor: (Element) -> C) -> [Element] where C: Comparable {
 		self
 			.map { ($0, accessor($0)) }
 			.sorted { $0.1 < $1.1 }
 			.map { $0.0 }
+	}
+	
+	public func onlyElement(where isIncluded: (Element) throws -> Bool) rethrows -> Element? {
+		try filter(isIncluded).onlyElement()
 	}
 }
 
@@ -34,6 +38,12 @@ extension Sequence where Element: Hashable {
 		guard descending.count > 1 else { return descending.first?.key }
 		guard descending[0].value > descending[1].value else { return nil }
 		return descending.first!.key
+	}
+}
+
+extension Collection {
+	public func onlyElement() -> Element? {
+		return count == 1 ? first! : nil
 	}
 }
 

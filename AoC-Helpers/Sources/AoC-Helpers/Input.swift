@@ -6,9 +6,13 @@ public func input(filename: String = "input") -> String {
 	return String(data: rawInput, encoding: .utf8)!
 }
 
-extension String {
-	public func lines() -> [Substring] {
+extension StringProtocol {
+	public func lines() -> [SubSequence] {
 		split(separator: "\n", omittingEmptySubsequences: false).dropLast()
+	}
+	
+	public func words() -> [SubSequence] {
+		split(separator: " ")
 	}
 }
 

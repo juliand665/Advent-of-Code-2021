@@ -5,7 +5,7 @@ struct Board {
 	
 	init<S: Sequence>(lines: S) where S.Element: StringProtocol {
 		self.storage = .init(lines.map {
-			$0.split(whereSeparator: \.isWhitespace).asInts().map { ($0, false) }
+			$0.words().asInts().map { ($0, false) }
 		})
 	}
 	
