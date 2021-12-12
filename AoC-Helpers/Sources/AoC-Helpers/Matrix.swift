@@ -43,6 +43,10 @@ public struct Matrix<Element> {
 		return elements[position.x + width * position.y]
 	}
 	
+	public func neighbors(of position: Vector2) -> [Element] {
+		position.neighbors.compactMap(element(at:))
+	}
+	
 	public func row(at y: Int) -> ArraySlice<Element> {
 		elements[width * y ..< width * (y + 1)]
 	}

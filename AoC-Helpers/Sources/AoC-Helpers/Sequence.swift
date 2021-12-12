@@ -21,6 +21,12 @@ extension Sequence where Element: AdditiveArithmetic {
 	}
 }
 
+extension Sequence where Element == Int {
+	public func product() -> Element {
+		reduce(1, *)
+	}
+}
+
 extension Sequence where Element: Equatable {
 	public func count(of element: Element) -> Int {
 		count { $0 == element }
