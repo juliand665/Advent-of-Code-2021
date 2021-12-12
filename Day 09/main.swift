@@ -1,7 +1,7 @@
 import AoC_Helpers
 import Algorithms
 
-let heightmap = Matrix(input().lines().map { $0.map(String.init).asInts() })
+let heightmap = Matrix(digitsOf: input().lines())
 let lowPoints = heightmap.indexed().filter { position, height in
 	heightmap.neighbors(of: position)
 		.allSatisfy { height < $0 }

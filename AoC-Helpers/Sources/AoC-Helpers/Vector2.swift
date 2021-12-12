@@ -17,6 +17,10 @@ public struct Vector2: Hashable {
 		applyingOffsets(.distance1)
 	}
 	
+	public var neighborsWithDiagonals: [Vector2] {
+		applyingOffsets(.distance1orDiagonal)
+	}
+	
 	public var angle: Double {
 		atan2(Double(y), Double(x))
 	}

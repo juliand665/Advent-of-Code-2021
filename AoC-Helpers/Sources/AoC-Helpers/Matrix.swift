@@ -4,7 +4,7 @@ import HandyOperators
 public struct Matrix<Element> {
 	public let width, height: Int
 	/// row-major list of elements in the matrix
-	private(set) public var elements: [Element]
+	public var elements: [Element]
 	
 	public init(_ elements: [[Element]]) {
 		let width = elements.first!.count
@@ -38,8 +38,16 @@ public struct Matrix<Element> {
 		set { elements[position.x + width * position.y] = newValue }
 	}
 	
+	public func isInMatrix(_ position: Vector2) -> Bool {
+		guard
+			case 0..<width = position.x,
+			case 0..<height = position.y
+		else { return false }
+		return true
+	}
+	
 	public func element(at position: Vector2) -> Element? {
-		guard case 0..<width = position.x, case 0..<height = position.y else { return nil }
+		guard isInMatrix(position) else { return nil }
 		return elements[position.x + width * position.y]
 	}
 	
@@ -128,5 +136,11 @@ extension Matrix: RandomAccessCollection {
 		} else {
 			return Vector2(0, i.y + 1)
 		}
+	}
+}
+
+extension Matrix where Element == Int {
+	public init(digitsOf lines: [Substring]) {
+		self.init(lines.map { $0.map(String.init).asInts() })
 	}
 }
