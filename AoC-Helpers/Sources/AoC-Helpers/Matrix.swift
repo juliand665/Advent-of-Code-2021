@@ -28,6 +28,20 @@ public struct Matrix<Element> {
 		self.elements = elements
 	}
 	
+	public init<S: Sequence>(
+		positions: S,
+		present: Element, absent: Element
+	) where S.Element == Vector2 {
+		self.init(
+			width: (positions.map(\.x).max() ?? 0) + 1,
+			height: (positions.map(\.y).max() ?? 0) + 1,
+			repeating: absent
+		)
+		for position in positions {
+			self[position] = present
+		}
+	}
+	
 	public subscript(x: Int, y: Int) -> Element {
 		get { self[Vector2(x: x, y: y)] }
 		set { self[Vector2(x: x, y: y)] = newValue }
@@ -142,5 +156,11 @@ extension Matrix: RandomAccessCollection {
 extension Matrix where Element == Int {
 	public init(digitsOf lines: [Substring]) {
 		self.init(lines.map { $0.map(String.init).asInts() })
+	}
+}
+
+extension Matrix where Element == Character {
+	public init<S: Sequence>(positions: S) where S.Element == Vector2 {
+		self.init(positions: positions, present: "█", absent: "·")
 	}
 }

@@ -59,6 +59,10 @@ public struct Vector2: Hashable {
 	public func distance(to other: Vector2) -> Int {
 		(self - other).absolute
 	}
+	
+	public func with(x: Int? = nil, y: Int? = nil) -> Vector2 {
+		.init(x ?? self.x, y ?? self.y)
+	}
 }
 
 extension Vector2 {
