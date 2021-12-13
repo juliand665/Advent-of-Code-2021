@@ -43,32 +43,34 @@ let connected: [Cave: Set<Cave>] = paths.reduce(into: [:]) { paths, connection i
 }
 
 typealias Path = [Cave]
-func pathsToEnd(from start: Cave, visited: Set<Cave> = []) -> [Path] {
-	guard start != .end else { return [[start]] }
+func pathsToEnd(from start: Cave, visited: Set<Cave> = []) -> Int {
+	guard start != .end else { return 1 }
 	let newVisited = visited.union([start])
 	return connected[start]!
+		.lazy
 		.filter { $0.canBeRevisited || !visited.contains($0) }
-		.flatMap { pathsToEnd(from: $0, visited: newVisited) }
-		.map { [start] + $0 }
+		.map { pathsToEnd(from: $0, visited: newVisited) }
+		.sum()
 }
 
 let foundPaths = pathsToEnd(from: .start)
-print(foundPaths.count, "paths found")
+print(foundPaths, "paths found")
 
-func pathsToEndWithRevisit(from start: Cave, hasVisitedTwice: Bool = false, visited: Set<Cave> = []) -> [Path] {
-	guard start != .end else { return [[start]] }
+func pathsToEndWithRevisit(from start: Cave, hasVisitedTwice: Bool = false, visited: Set<Cave> = []) -> Int {
+	guard start != .end else { return 1 }
 	let newVisited = visited.union([start])
 	return connected[start]!
-		.flatMap { next -> [Path] in
+		.lazy
+		.map { next -> Int in
 			if next.canBeRevisited || !visited.contains(next) {
 				return pathsToEndWithRevisit(from: next, hasVisitedTwice: hasVisitedTwice, visited: newVisited)
 			} else if !hasVisitedTwice, next.isSmallCave {
 				return pathsToEndWithRevisit(from: next, hasVisitedTwice: true, visited: newVisited)
 			} else {
-				return []
+				return 0
 			}
 		}
-		.map { [start] + $0 }
+		.sum()
 }
 let foundPathsWithRevisit = pathsToEndWithRevisit(from: .start)
-print(foundPathsWithRevisit.count, "paths with double visit found")
+print(foundPathsWithRevisit, "paths with double visit found")
