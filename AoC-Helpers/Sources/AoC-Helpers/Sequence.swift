@@ -13,6 +13,10 @@ extension Sequence {
 	public func onlyElement(where isIncluded: (Element) throws -> Bool) rethrows -> Element? {
 		try filter(isIncluded).onlyElement()
 	}
+	
+	public func onlyElement() -> Element? {
+		Array(prefix(2)).onlyElement()
+	}
 }
 
 extension Sequence where Element: AdditiveArithmetic {
