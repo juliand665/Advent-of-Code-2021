@@ -21,6 +21,17 @@ public struct Matrix<Element> {
 		)
 	}
 	
+	public init(width: Int, height: Int, computing element: (Vector2) throws -> Element) rethrows {
+		self.init(
+			width: width, height: height,
+			elements: try (0..<height).flatMap { y in
+				try (0..<width).map { x in
+					try element(.init(x, y))
+				}
+			}
+		)
+	}
+	
 	public init(width: Int, height: Int, elements: [Element]) {
 		assert(elements.count == width * height)
 		self.width = width
@@ -110,6 +121,15 @@ public struct Matrix<Element> {
 			width: width, height: height,
 			elements: try elements.map(transform)
 		)
+	}
+	
+	public func flattened<T>() -> Matrix<T> where Element == Matrix<T> {
+		.init(rows().flatMap { matrices -> [[T]] in
+			matrices
+				.map { $0.rows() }
+				.transposed()
+				.map { Array($0.joined()) }
+		})
 	}
 }
 
