@@ -11,4 +11,12 @@ extension BinaryInteger where Stride: SignedInteger {
 	public init(digits: [Self], base: Self = 10) {
 		self = digits.reduce(0) { $0 * base + $1 }
 	}
+	
+	public var bits: [Bool] {
+		digits(base: 2).map { $0 == 1 }
+	}
+	
+	public init<S: Sequence>(bits: S) where S.Element == Bool {
+		self = bits.reduce(0) { $0 << 1 | ($1 ? 1 : 0) }
+	}
 }
