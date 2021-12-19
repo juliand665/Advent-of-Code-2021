@@ -17,6 +17,15 @@ extension Sequence {
 	public func onlyElement() -> Element? {
 		Array(prefix(2)).onlyElement()
 	}
+	
+	public func pairwiseCombinations() -> AnySequence<(Element, Element)> {
+		.init(enumerated().lazy.flatMap { i, lhs in
+			enumerated()
+				.lazy
+				.filter { $0.offset != i }
+				.map { (lhs, $0.element) }
+		})
+	}
 }
 
 extension Sequence where Element: AdditiveArithmetic {
