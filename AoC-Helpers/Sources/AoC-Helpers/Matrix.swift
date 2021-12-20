@@ -6,7 +6,9 @@ public struct Matrix<Element> {
 	/// row-major list of elements in the matrix
 	public var elements: [Element]
 	
-	public init(_ elements: [[Element]]) {
+	public init<Outer: Collection, Inner: Collection>(
+		_ elements: Outer
+	) where Outer.Element == Inner, Inner.Element == Element {
 		let width = elements.first!.count
 		self.width = width
 		self.height = elements.count
@@ -182,5 +184,11 @@ extension Matrix where Element == Int {
 extension Matrix where Element == Character {
 	public init<S: Sequence>(positions: S) where S.Element == Vector2 {
 		self.init(positions: positions, present: "█", absent: "·")
+	}
+}
+
+extension Matrix where Element == Bool {
+	public func binaryImage() -> Matrix<Character> {
+		map { $0 ? "█" : "·" }
 	}
 }

@@ -62,7 +62,11 @@ extension Sequence where Element: Hashable {
 
 extension Collection {
 	public func onlyElement() -> Element? {
-		return count == 1 ? first! : nil
+		count == 1 ? first! : nil
+	}
+	
+	public func bothElements() -> (Element, Element)? {
+		count == 2 ? (first!, dropFirst().first!) : nil
 	}
 	
 	public func asOptional() -> Element? {
