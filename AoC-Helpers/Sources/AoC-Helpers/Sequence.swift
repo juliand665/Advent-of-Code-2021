@@ -64,6 +64,11 @@ extension Collection {
 	public func onlyElement() -> Element? {
 		return count == 1 ? first! : nil
 	}
+	
+	public func asOptional() -> Element? {
+		assert(count <= 1)
+		return first
+	}
 }
 
 extension Collection where Element: Collection, Index == Element.Index {
