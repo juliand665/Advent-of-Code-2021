@@ -51,16 +51,19 @@ public struct Matrix<Element> {
 		}
 	}
 	
+	@inlinable
 	public subscript(x: Int, y: Int) -> Element {
-		get { rows[y][x] }
-		set { rows[y][x] = newValue }
+		_read { yield rows[y][x] }
+		_modify { yield &rows[y][x] }
 	}
 	
+	@inlinable
 	public subscript(position: Vector2) -> Element {
-		get { self[position.x, position.y] }
-		set { self[position.x, position.y] = newValue }
+		_read { yield self[position.x, position.y] }
+		_modify { yield &self[position.x, position.y] }
 	}
 	
+	@inlinable
 	public func isInMatrix(_ position: Vector2) -> Bool {
 		guard
 			case 0..<width = position.x,
@@ -69,6 +72,7 @@ public struct Matrix<Element> {
 		return true
 	}
 	
+	@inlinable
 	public func element(at position: Vector2) -> Element? {
 		guard isInMatrix(position) else { return nil }
 		return self[position]
@@ -78,21 +82,24 @@ public struct Matrix<Element> {
 		position.neighbors.compactMap(element(at:))
 	}
 	
+	@inlinable
 	public func row(at y: Int) -> [Element] {
 		rows[y]
 	}
 	
+	@inlinable
 	public func column(at x: Int) -> [Element] {
 		(0..<height).map { self[x, $0] }
 	}
 	
+	@inlinable
 	public func columns() -> [[Element]] {
 		(0..<width).map(column(at:))
 	}
 	
 	public func positions() -> [Vector2] {
 		(0..<height).flatMap { y in
-			(0..<width).map { x in Vector2(x: x, y: y) }
+			(0..<width).map { x in Vector2(x, y) }
 		}
 	}
 	
@@ -105,11 +112,12 @@ public struct Matrix<Element> {
 		
 		return Matrix(width: height, height: width, repeating: first) <- { copy in
 			for (position, element) in enumerated() {
-				copy[Vector2(x: position.y, y: position.x)] = element
+				copy[position.y, position.x] = element
 			}
 		}
 	}
 	
+	@inlinable
 	public func map<T>(_ transform: (Element) throws -> T) rethrows -> Matrix<T> {
 		.init(try rows.nestedMap(transform))
 	}
