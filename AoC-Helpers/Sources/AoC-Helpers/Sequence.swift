@@ -60,6 +60,12 @@ extension Sequence where Element: Hashable {
 	}
 }
 
+extension Sequence where Element: Sequence {
+	func nestedMap<T>(_ transform: (Element.Element) throws -> T) rethrows -> [[T]] {
+		try map { try $0.map(transform) }
+	}
+}
+
 extension Collection {
 	public func onlyElement() -> Element? {
 		count == 1 ? first! : nil

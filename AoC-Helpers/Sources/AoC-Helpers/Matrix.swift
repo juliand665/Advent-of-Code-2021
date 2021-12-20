@@ -4,41 +4,37 @@ import HandyOperators
 public struct Matrix<Element> {
 	public let width, height: Int
 	/// row-major list of elements in the matrix
-	public var elements: [Element]
+	public var rows: [[Element]]
+	
+	public var elements: FlattenSequence<[[Element]]> {
+		rows.joined()
+	}
 	
 	public init<Outer: Collection, Inner: Collection>(
-		_ elements: Outer
+		_ rows: Outer
 	) where Outer.Element == Inner, Inner.Element == Element {
-		let width = elements.first!.count
+		let width = rows.first!.count
 		self.width = width
-		self.height = elements.count
-		assert(elements.allSatisfy { $0.count == width })
-		self.elements = Array(elements.joined())
+		self.height = rows.count
+		assert(rows.allSatisfy { $0.count == width })
+		self.rows = Array(rows.map(Array.init))
 	}
 	
 	public init(width: Int, height: Int, repeating element: Element) {
-		self.init(
-			width: width, height: height,
-			elements: Array(repeating: element, count: width * height)
-		)
+		self.init(Array(
+			repeating: Array(repeating: element, count: width),
+			count: height
+		))
 	}
 	
 	public init(width: Int, height: Int, computing element: (Vector2) throws -> Element) rethrows {
 		self.init(
-			width: width, height: height,
-			elements: try (0..<height).flatMap { y in
+			try (0..<height).map { y in
 				try (0..<width).map { x in
 					try element(.init(x, y))
 				}
 			}
 		)
-	}
-	
-	public init(width: Int, height: Int, elements: [Element]) {
-		assert(elements.count == width * height)
-		self.width = width
-		self.height = height
-		self.elements = elements
 	}
 	
 	public init<S: Sequence>(
@@ -56,13 +52,13 @@ public struct Matrix<Element> {
 	}
 	
 	public subscript(x: Int, y: Int) -> Element {
-		get { self[Vector2(x: x, y: y)] }
-		set { self[Vector2(x: x, y: y)] = newValue }
+		get { rows[y][x] }
+		set { rows[y][x] = newValue }
 	}
 	
 	public subscript(position: Vector2) -> Element {
-		get { elements[position.x + width * position.y] }
-		set { elements[position.x + width * position.y] = newValue }
+		get { self[position.x, position.y] }
+		set { self[position.x, position.y] = newValue }
 	}
 	
 	public func isInMatrix(_ position: Vector2) -> Bool {
@@ -75,19 +71,15 @@ public struct Matrix<Element> {
 	
 	public func element(at position: Vector2) -> Element? {
 		guard isInMatrix(position) else { return nil }
-		return elements[position.x + width * position.y]
+		return self[position]
 	}
 	
 	public func neighbors(of position: Vector2) -> [Element] {
 		position.neighbors.compactMap(element(at:))
 	}
 	
-	public func row(at y: Int) -> ArraySlice<Element> {
-		elements[width * y ..< width * (y + 1)]
-	}
-	
-	public func rows() -> [ArraySlice<Element>] {
-		(0..<height).map(row(at:))
+	public func row(at y: Int) -> [Element] {
+		rows[y]
 	}
 	
 	public func column(at x: Int) -> [Element] {
@@ -119,16 +111,13 @@ public struct Matrix<Element> {
 	}
 	
 	public func map<T>(_ transform: (Element) throws -> T) rethrows -> Matrix<T> {
-		.init(
-			width: width, height: height,
-			elements: try elements.map(transform)
-		)
+		.init(try rows.nestedMap(transform))
 	}
 	
 	public func flattened<T>() -> Matrix<T> where Element == Matrix<T> {
-		.init(rows().flatMap { matrices -> [[T]] in
+		.init(rows.flatMap { matrices -> [[T]] in
 			matrices
-				.map { $0.rows() }
+				.map { $0.rows }
 				.transposed()
 				.map { Array($0.joined()) }
 		})
@@ -139,7 +128,7 @@ extension Matrix: CustomStringConvertible {
 	public var description: String {
 		let descriptions = self.map(String.init(describing:))
 		let maxLength = descriptions.map(\.count).max()!
-		let rows = descriptions.rows().map {
+		let rows = descriptions.rows.map {
 			$0
 				.map { String(repeating: " ", count: maxLength - $0.count) + $0 }
 				.joined(separator: " ")

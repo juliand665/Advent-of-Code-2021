@@ -4,7 +4,7 @@ var levels = Matrix(digitsOf: input().lines())
 
 /// - returns: number of flashes in this step
 func simulate() -> Int {
-	levels.elements.forEachMutate { $0 += 1 }
+	levels.rows.forEachMutate { $0.forEachMutate { $0 += 1 } }
 	
 	var flashed: Set<Vector2> = []
 	func checkForFlash(at position: Vector2) {

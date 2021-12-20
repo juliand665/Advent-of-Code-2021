@@ -5,13 +5,13 @@ struct Board {
 	
 	init<S: Sequence>(lines: S) where S.Element: StringProtocol {
 		self.storage = .init(lines.map {
-			$0.words().asInts().map { ($0, false) }
+			$0.words().asInts().map { (number: $0, isMarked: false) }
 		})
 	}
 	
 	func hasBingo() -> Bool {
 		false
-		|| storage.rows().contains { $0.allSatisfy(\.isMarked) }
+		|| storage.rows.contains { $0.allSatisfy(\.isMarked) }
 		|| storage.columns().contains { $0.allSatisfy(\.isMarked) }
 	}
 	
