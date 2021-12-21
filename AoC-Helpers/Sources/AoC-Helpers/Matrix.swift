@@ -6,6 +6,7 @@ public struct Matrix<Element> {
 	/// row-major list of elements in the matrix
 	public var rows: [[Element]]
 	
+	@inlinable
 	public var elements: FlattenSequence<[[Element]]> {
 		rows.joined()
 	}
@@ -78,6 +79,7 @@ public struct Matrix<Element> {
 		return self[position]
 	}
 	
+	@inlinable
 	public func neighbors(of position: Vector2) -> [Element] {
 		position.neighbors.compactMap(element(at:))
 	}
@@ -97,16 +99,19 @@ public struct Matrix<Element> {
 		(0..<width).map(column(at:))
 	}
 	
+	@inlinable
 	public func positions() -> [Vector2] {
 		(0..<height).flatMap { y in
 			(0..<width).map { x in Vector2(x, y) }
 		}
 	}
 	
+	@inlinable
 	public func enumerated() -> [(position: Vector2, element: Element)] {
 		Array(zip(positions(), elements))
 	}
 	
+	@inlinable
 	public func transposed() -> Self {
 		guard let first = self.element(at: .zero) else { return self }
 		
@@ -122,6 +127,7 @@ public struct Matrix<Element> {
 		.init(try rows.nestedMap(transform))
 	}
 	
+	@inlinable
 	public func flattened<T>() -> Matrix<T> where Element == Matrix<T> {
 		.init(rows.flatMap { matrices -> [[T]] in
 			matrices
