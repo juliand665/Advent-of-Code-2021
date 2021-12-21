@@ -20,8 +20,9 @@ func pathRiskToEnd(in riskLevels: Matrix<Int>) -> Int {
 	while let start = toSearch.popMin() {
 		guard !searched.contains(start.position) else { continue }
 		searched.insert(start.position)
-		for neighbor in start.position.neighbors where riskLevels.isInMatrix(neighbor) {
-			let cost = start.cost + riskLevels[neighbor]
+		for neighbor in start.position.neighbors {
+			guard let neighborRisk = riskLevels.element(at: neighbor) else { continue }
+			let cost = start.cost + neighborRisk
 			guard neighbor != target else { return cost }
 			toSearch.insert(Candidate(position: neighbor, cost: cost))
 		}
@@ -29,11 +30,13 @@ func pathRiskToEnd(in riskLevels: Matrix<Int>) -> Int {
 	fatalError("target not reached!")
 }
 
-let smallPathRisk = pathRiskToEnd(in: riskLevels)
-print("lowest-risk path to end in small version:", smallPathRisk)
-
-let fullMap = Matrix(width: 5, height: 5) { pos in
-	riskLevels.map { ($0 + pos.absolute - 1) % 9 + 1 }
-}.flattened()
-let fullPathRisk = pathRiskToEnd(in: fullMap)
-print("lowest-risk path to end in full version:", fullPathRisk)
+measureTime {
+	let smallPathRisk = pathRiskToEnd(in: riskLevels)
+	print("lowest-risk path to end in small version:", smallPathRisk)
+	
+	let fullMap = Matrix(width: 5, height: 5) { pos in
+		riskLevels.map { ($0 + pos.absolute - 1) % 9 + 1 }
+	}.flattened()
+	let fullPathRisk = pathRiskToEnd(in: fullMap)
+	print("lowest-risk path to end in full version:", fullPathRisk)
+}
