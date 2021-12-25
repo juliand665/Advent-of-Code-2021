@@ -9,17 +9,6 @@ struct Explosion {
 	var left, right: Int?
 }
 
-extension Optional {
-	mutating func take() -> Self {
-		if let wrapped = self {
-			self = nil
-			return wrapped
-		} else {
-			return self
-		}
-	}
-}
-
 struct Pair: CustomStringConvertible {
 	var left, right: PairElement
 	

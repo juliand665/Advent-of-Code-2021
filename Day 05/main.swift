@@ -35,10 +35,6 @@ extension VentLine: Parseable {
 
 let lines = input().lines().map(VentLine.init)
 
-func autoFlippedRange(_ a: Int, _ b: Int) -> [Int] {
-	a <= b ? Array(a...b) : (b...a).reversed()
-}
-
 var layers = lines
 	.flatMap { $0.positions(allowDiagonal: false) }
 	.occurrenceCounts()
