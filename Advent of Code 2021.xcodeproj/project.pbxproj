@@ -10,7 +10,6 @@
 		B930389727678F060011EB82 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B930389627678F060011EB82 /* main.swift */; };
 		B930389C27678F0C0011EB82 /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B930389B27678F0C0011EB82 /* AoC-Helpers */; };
 		B930389F27678F1A0011EB82 /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B930389D27678F140011EB82 /* input.txt */; };
-		B93038A027678FF40011EB82 /* SimpleParser in CopyFiles */ = {isa = PBXBuildFile; fileRef = B942B911276438C100F08C78 /* SimpleParser */; };
 		B931EC2C2770CC910024C3EB /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B931EC2B2770CC910024C3EB /* main.swift */; };
 		B931EC312770CC960024C3EB /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B931EC302770CC960024C3EB /* AoC-Helpers */; };
 		B931EC342770CCA60024C3EB /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B931EC332770CCA50024C3EB /* input.txt */; };
@@ -20,14 +19,12 @@
 		B93E633327739D4500FE2844 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E633227739D4500FE2844 /* main.swift */; };
 		B93E633827739D4A00FE2844 /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B93E633727739D4A00FE2844 /* AoC-Helpers */; };
 		B93E633B27739D5F00FE2844 /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B93E633927739D5200FE2844 /* input.txt */; };
-		B93E633D27739DC200FE2844 /* SimpleParser in Frameworks */ = {isa = PBXBuildFile; productRef = B93E633C27739DC200FE2844 /* SimpleParser */; };
 		B942B8F627642CF900F08C78 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B942B8F527642CF900F08C78 /* main.swift */; };
 		B942B8FC27642D1700F08C78 /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B942B8FB27642D1500F08C78 /* input.txt */; };
 		B942B9002764350900F08C78 /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B942B8FF2764350900F08C78 /* AoC-Helpers */; };
 		B942B908276437FE00F08C78 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B942B907276437FE00F08C78 /* main.swift */; };
 		B942B90E2764382400F08C78 /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B942B90D2764382400F08C78 /* AoC-Helpers */; };
 		B942B9102764382D00F08C78 /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B942B90C2764381A00F08C78 /* input.txt */; };
-		B942B913276438D500F08C78 /* SimpleParser in Frameworks */ = {isa = PBXBuildFile; productRef = B942B912276438D500F08C78 /* SimpleParser */; };
 		B942B91627643F7800F08C78 /* HandyOperators in Frameworks */ = {isa = PBXBuildFile; productRef = B942B91527643F7800F08C78 /* HandyOperators */; };
 		B942B91E2764400300F08C78 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B942B91D2764400300F08C78 /* main.swift */; };
 		B942B9242764401D00F08C78 /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B942B9222764400B00F08C78 /* input.txt */; };
@@ -38,7 +35,6 @@
 		B942B949276457FC00F08C78 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B942B948276457FC00F08C78 /* main.swift */; };
 		B942B94F2764581200F08C78 /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B942B94D2764580400F08C78 /* input.txt */; };
 		B942B9512764581B00F08C78 /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B942B9502764581B00F08C78 /* AoC-Helpers */; };
-		B942B9532764584E00F08C78 /* SimpleParser in Frameworks */ = {isa = PBXBuildFile; productRef = B942B9522764584E00F08C78 /* SimpleParser */; };
 		B942B95B27645DEB00F08C78 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B942B95A27645DEB00F08C78 /* main.swift */; };
 		B942B96127645DFA00F08C78 /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B942B96027645DFA00F08C78 /* AoC-Helpers */; };
 		B942B96327645E0400F08C78 /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B942B95F27645DF400F08C78 /* input.txt */; };
@@ -54,7 +50,6 @@
 		B942C96A276C4B6E006E2FED /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B942C969276C4B6E006E2FED /* main.swift */; };
 		B942C970276C4B7B006E2FED /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B942C96F276C4B7B006E2FED /* AoC-Helpers */; };
 		B942C972276C8219006E2FED /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B942C971276C8216006E2FED /* input.txt */; };
-		B942C974276C8241006E2FED /* SimpleParser in Frameworks */ = {isa = PBXBuildFile; productRef = B942C973276C8241006E2FED /* SimpleParser */; };
 		B942C976276C82D6006E2FED /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = B942C975276C82D6006E2FED /* Algorithms */; };
 		B942C980276F7CE2006E2FED /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B942C97F276F7CE2006E2FED /* main.swift */; };
 		B942C985276F7CE7006E2FED /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B942C984276F7CE7006E2FED /* AoC-Helpers */; };
@@ -88,7 +83,6 @@
 		B9FF6B2227693A9A00D8D0BD /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9FF6B2127693A9A00D8D0BD /* main.swift */; };
 		B9FF6B2827693AA700D8D0BD /* AoC-Helpers in Frameworks */ = {isa = PBXBuildFile; productRef = B9FF6B2727693AA700D8D0BD /* AoC-Helpers */; };
 		B9FF6B2A27693AC000D8D0BD /* input.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = B9FF6B2927693AB800D8D0BD /* input.txt */; };
-		B9FF6B2C2769419400D8D0BD /* SimpleParser in Frameworks */ = {isa = PBXBuildFile; productRef = B9FF6B2B2769419400D8D0BD /* SimpleParser */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -98,7 +92,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-				B93038A027678FF40011EB82 /* SimpleParser in CopyFiles */,
 				B930389F27678F1A0011EB82 /* input.txt in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -345,7 +338,6 @@
 		B942B905276437FE00F08C78 /* Day 02 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Day 02"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B942B907276437FE00F08C78 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B942B90C2764381A00F08C78 /* input.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = input.txt; sourceTree = "<group>"; };
-		B942B911276438C100F08C78 /* SimpleParser */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SimpleParser; path = "../ Packages/SimpleParser"; sourceTree = "<group>"; };
 		B942B91B2764400300F08C78 /* Day 03 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Day 03"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B942B91D2764400300F08C78 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		B942B9222764400B00F08C78 /* input.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = input.txt; sourceTree = "<group>"; };
@@ -429,7 +421,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B93E633827739D4A00FE2844 /* AoC-Helpers in Frameworks */,
-				B93E633D27739DC200FE2844 /* SimpleParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,7 +438,6 @@
 			files = (
 				B942B91627643F7800F08C78 /* HandyOperators in Frameworks */,
 				B942B90E2764382400F08C78 /* AoC-Helpers in Frameworks */,
-				B942B913276438D500F08C78 /* SimpleParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,7 +462,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B942B9512764581B00F08C78 /* AoC-Helpers in Frameworks */,
-				B942B9532764584E00F08C78 /* SimpleParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -514,7 +503,6 @@
 			files = (
 				B942C976276C82D6006E2FED /* Algorithms in Frameworks */,
 				B942C970276C4B7B006E2FED /* AoC-Helpers in Frameworks */,
-				B942C974276C8241006E2FED /* SimpleParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,7 +580,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9FF6B2827693AA700D8D0BD /* AoC-Helpers in Frameworks */,
-				B9FF6B2C2769419400D8D0BD /* SimpleParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,7 +625,6 @@
 		B942B8E727642CE100F08C78 = {
 			isa = PBXGroup;
 			children = (
-				B942B911276438C100F08C78 /* SimpleParser */,
 				B942B8FD2764347900F08C78 /* AoC-Helpers */,
 				B942B8F427642CF900F08C78 /* Day 01 */,
 				B942B906276437FE00F08C78 /* Day 02 */,
@@ -954,7 +940,6 @@
 			name = "Day 22";
 			packageProductDependencies = (
 				B93E633727739D4A00FE2844 /* AoC-Helpers */,
-				B93E633C27739DC200FE2844 /* SimpleParser */,
 			);
 			productName = "Day 22";
 			productReference = B93E633027739D4500FE2844 /* Day 22 */;
@@ -995,7 +980,6 @@
 			name = "Day 02";
 			packageProductDependencies = (
 				B942B90D2764382400F08C78 /* AoC-Helpers */,
-				B942B912276438D500F08C78 /* SimpleParser */,
 				B942B91527643F7800F08C78 /* HandyOperators */,
 			);
 			productName = "Day 02";
@@ -1057,7 +1041,6 @@
 			name = "Day 05";
 			packageProductDependencies = (
 				B942B9502764581B00F08C78 /* AoC-Helpers */,
-				B942B9522764584E00F08C78 /* SimpleParser */,
 			);
 			productName = "Day 05";
 			productReference = B942B946276457FC00F08C78 /* Day 05 */;
@@ -1158,7 +1141,6 @@
 			name = "Day 17";
 			packageProductDependencies = (
 				B942C96F276C4B7B006E2FED /* AoC-Helpers */,
-				B942C973276C8241006E2FED /* SimpleParser */,
 				B942C975276C82D6006E2FED /* Algorithms */,
 			);
 			productName = "Day 17";
@@ -1345,7 +1327,6 @@
 			name = "Day 14";
 			packageProductDependencies = (
 				B9FF6B2727693AA700D8D0BD /* AoC-Helpers */,
-				B9FF6B2B2769419400D8D0BD /* SimpleParser */,
 			);
 			productName = "Day 14";
 			productReference = B9FF6B1F27693A9A00D8D0BD /* Day 14 */;
@@ -4826,10 +4807,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = "AoC-Helpers";
 		};
-		B93E633C27739DC200FE2844 /* SimpleParser */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SimpleParser;
-		};
 		B942B8FF2764350900F08C78 /* AoC-Helpers */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AoC-Helpers";
@@ -4837,10 +4814,6 @@
 		B942B90D2764382400F08C78 /* AoC-Helpers */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AoC-Helpers";
-		};
-		B942B912276438D500F08C78 /* SimpleParser */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SimpleParser;
 		};
 		B942B91527643F7800F08C78 /* HandyOperators */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -4858,10 +4831,6 @@
 		B942B9502764581B00F08C78 /* AoC-Helpers */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AoC-Helpers";
-		};
-		B942B9522764584E00F08C78 /* SimpleParser */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SimpleParser;
 		};
 		B942B96027645DFA00F08C78 /* AoC-Helpers */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -4882,10 +4851,6 @@
 		B942C96F276C4B7B006E2FED /* AoC-Helpers */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AoC-Helpers";
-		};
-		B942C973276C8241006E2FED /* SimpleParser */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SimpleParser;
 		};
 		B942C975276C82D6006E2FED /* Algorithms */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -4952,10 +4917,6 @@
 		B9FF6B2727693AA700D8D0BD /* AoC-Helpers */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = "AoC-Helpers";
-		};
-		B9FF6B2B2769419400D8D0BD /* SimpleParser */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SimpleParser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
