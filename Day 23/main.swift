@@ -2,54 +2,6 @@ import AoC_Helpers
 import HandyOperators
 import Collections
 
-// helpful for tracking associated values across functional chains
-@dynamicMemberLookup
-struct Tagged<Value, Tag>: CustomStringConvertible {
-	var value: Value
-	var tag: Tag
-	
-	subscript<T>(dynamicMember member: KeyPath<Value, T>) -> Tagged<T, Tag> {
-		.init(value: value[keyPath: member], tag: tag)
-	}
-	
-	var description: String {
-		"Tagged(\(value), tag: \(tag))"
-	}
-}
-
-extension Tagged where Value: _Optional {
-	var lifted: Tagged<Value.Wrapped, Tag>? {
-		value._optional.map { .init(value: $0, tag: tag) }
-	}
-}
-
-extension Tagged where Tag: BinaryInteger {
-	func tagIncremented(by increment: Tag = 1) -> Self {
-		self <- { $0.tag += increment }
-	}
-}
-
-extension Tagged: Equatable where Value: Equatable {
-	static func == (lhs: Self, rhs: Self) -> Bool {
-		lhs.value == rhs.value
-	}
-}
-
-extension Tagged: Comparable where Value: Comparable {
-	static func < (lhs: Self, rhs: Self) -> Bool {
-		lhs.value < rhs.value
-	}
-}
-
-protocol _Optional {
-	associatedtype Wrapped
-	var _optional: Wrapped? { get }
-}
-
-extension Optional: _Optional {
-	var _optional: Wrapped? { self }
-}
-
 enum AmphipodType: String, CustomStringConvertible {
 	case a = "A"
 	case b = "B"
@@ -77,7 +29,7 @@ enum AmphipodType: String, CustomStringConvertible {
 	var description: String { rawValue }
 }
 
-typealias Destination = Tagged<Location, Int>
+typealias Destination = (Location, distance: Int)
 
 struct Amphipod: Hashable {
 	var type: AmphipodType
@@ -98,21 +50,19 @@ struct Amphipod: Hashable {
 				state.isFree(top),
 				position.hasPath(to: entrance, in: state)
 			else { return [] }
+			let topWithCost = (top.asLocation, distance: abs(entrance.index - position.index) + 1)
 			let bottom = top.other
-			let topWithCost = Tagged(value: top, tag: abs(entrance.index - position.index)).tagIncremented()
-			let bottomWithCost = topWithCost.other.tagIncremented()
-			let reachable = [topWithCost] + (state.isFree(bottom) ? [bottomWithCost] : [])
-			return reachable.map(\.asLocation)
+			let bottomWithCost = (bottom.asLocation, topWithCost.distance + 1)
+			return [topWithCost] + (state.isFree(bottom) ? [bottomWithCost] : [])
 		case .room(let position):
 			guard !hasMoved else { return [] }
 			if !position.isTop {
 				guard state.isFree(position.other) else { return [] }
 			}
-			let exitCost = position.isTop ? 1 : 2
+			let exitDistance = position.isTop ? 1 : 2
 			return position.hallwayNeighbor
 				.reachableNeighbors(in: state)
-				.map { $0.tagIncremented(by: exitCost) }
-				.map(\.asLocation)
+				.map { ($0.asLocation, distance: $1 + exitDistance) }
 		}
 	}
 }
@@ -122,10 +72,6 @@ let roomCount = 4
 
 protocol LocationConvertible {
 	var asLocation: Location { get }
-}
-
-extension Tagged: LocationConvertible where Value: LocationConvertible {
-	var asLocation: Location { value.asLocation }
 }
 
 enum Location: Hashable, LocationConvertible {
@@ -151,13 +97,13 @@ struct HallwayPosition: Hashable, LocationConvertible, CustomStringConvertible {
 		return RoomPosition(index: index / 2 - 1, isTop: true)
 	}
 	
-	func reachableNeighbors(in state: State) -> [Tagged<Self, Int>] {
+	func reachableNeighbors(in state: State) -> [(Self, distance: Int)] {
 		let left = Self.all.prefix(upTo: index).reversed().prefix(while: state.isFree)
 		let right = Self.all.suffix(from: index + 1).prefix(while: state.isFree)
 		return (left + right)
 			.lazy
 			.filter(\.isValidDestination)
-			.map { Tagged(value: $0, tag: abs($0.index - index)) }
+			.map { ($0, distance: abs($0.index - index)) }
 	}
 	
 	func hasPath(to other: Self, in state: State) -> Bool {
@@ -247,7 +193,6 @@ let pods = [
 
 let initial = State(occupation: .init(uniqueKeysWithValues: pods.map { ($0.location, $0) }))
 
-// TODO: branch and bound
 var knownCosts: [State: Int?] = [:]
 
 struct Candidate: Comparable {
@@ -261,9 +206,9 @@ struct Candidate: Comparable {
 
 var skips = 0
 var checks = 0
+var searched: Set<State> = []
 func minSolutionCost(startingFrom initial: State) -> Int? {
 	var toSearch: Heap = [Candidate(state: initial, cost: 0)]
-	var searched: Set<State> = []
 	while let start = toSearch.popMin() {
 		let state = start.state
 		guard !state.isSolved else { return start.cost }
@@ -272,10 +217,10 @@ func minSolutionCost(startingFrom initial: State) -> Int? {
 		searched.insert(state)
 		
 		let reachable = state.occupation.values.lazy.flatMap { pod in
-			pod.destinations(in: state).map { destination in
+			pod.destinations(in: state).map { destination, distance in
 				Candidate(
-					state: state.movingPod(at: pod.location, to: destination.value),
-					cost: start.cost + destination.tag * pod.type.costMultiplier
+					state: state.movingPod(at: pod.location, to: destination),
+					cost: start.cost + distance * pod.type.costMultiplier
 				)
 			}
 		}
@@ -288,5 +233,6 @@ func minSolutionCost(startingFrom initial: State) -> Int? {
 measureTime {
 	let minCost = minSolutionCost(startingFrom: initial)!
 	print("skips:", skips, "checks:", checks)
+	print(searched.count)
 	print("min cost:", minCost)
 }
