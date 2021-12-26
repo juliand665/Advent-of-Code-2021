@@ -246,26 +246,23 @@ let pods = [
 
 let initial = State(occupation: .init(uniqueKeysWithValues: pods.map { ($0.location, $0) }))
 
-typealias Solution = Tagged<Int, [State]>
-
 // TODO: branch and bound
-var knownCosts: [State: Solution?] = [:]
+var knownCosts: [State: Int?] = [:]
 var knownUses = 0
-func minSolutionCost(startingFrom state: State) -> Solution? {
-	func compute() -> Solution? {
+func minSolutionCost(startingFrom state: State) -> Int? {
+	func compute() -> Int? {
 		state.occupation.values.lazy.flatMap { pod in
 			pod.destinations(in: state).lazy.compactMap { destination in
 				minSolutionCost(
 					startingFrom: state.movingPod(at: pod.location, to: destination.value)
-				).map { Tagged(
-					value: $0.value + destination.tag * pod.type.costMultiplier,
-					tag: [state] + $0.tag
-				) }
+				).map {
+					$0 + destination.tag * pod.type.costMultiplier
+				}
 			}
 		}.min()
 	}
 	
-	guard !state.isSolved else { return .init(value: 0, tag: [state]) }
+	guard !state.isSolved else { return 0 }
 	
 	return (knownCosts[state] <- { _ in knownUses += 1 }) ?? (compute() <- {
 		knownCosts[state] = $0
@@ -278,6 +275,5 @@ func minSolutionCost(startingFrom state: State) -> Solution? {
 measureTime {
 	let minCost = minSolutionCost(startingFrom: initial)!
 	print("known uses:", knownUses)
-	print("min cost:", minCost.value)
-	print(minCost.tag.map(String.init).joined(separator: "\n"))
+	print("min cost:", minCost)
 }
