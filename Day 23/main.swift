@@ -195,20 +195,6 @@ struct State: Hashable, CustomStringConvertible {
 	}
 }
 
-
-
-let rows = input()
-	.lines()
-	.dropFirst(2)
-	.prefix(2)
-	.map { $0.map(String.init).compactMap(AmphipodType.init) }
-
-print(rows)
-
-let initial = State(roomRows: rows)
-
-var knownCosts: [State: Int?] = [:]
-
 struct Candidate: Comparable {
 	var state: State
 	var cost: Int
@@ -244,6 +230,19 @@ func minSolutionCost(startingFrom initial: State) -> Int? {
 	return nil
 }
 
+
+
+let rows = input()
+	.lines()
+	.dropFirst(2)
+	.prefix(2)
+	.map { $0.map(String.init).compactMap(AmphipodType.init) }
+
+print(rows)
+let (topRow, bottomRow) = rows.bothElements()!
+
+let initial = State(roomRows: rows)
+
 // for testing
 print(initial)
 let progressed = initial
@@ -264,4 +263,16 @@ let progressed = initial
 measureTime {
 	let minCost = minSolutionCost(startingFrom: initial)!
 	print("min cost:", minCost)
+}
+
+let part2Additions: [[AmphipodType]] = [
+	[.d, .c, .b, .a],
+	[.d, .b, .a, .c],
+]
+let part2Rows = [topRow] + part2Additions + [bottomRow]
+let part2Initial = State(roomRows: part2Rows)
+
+measureTime {
+	let minCost = minSolutionCost(startingFrom: part2Initial)!
+	print("full min cost:", minCost)
 }
