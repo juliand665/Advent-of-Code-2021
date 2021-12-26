@@ -1445,6 +1445,7 @@
 				B942B91427643F7800F08C78 /* XCRemoteSwiftPackageReference "HandyOperators" */,
 				B949B9A82766599200617BBD /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 				B99934E1276A2F8800B8B258 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				B9D5CEBE2778FFCE00A6DBE0 /* XCRemoteSwiftPackageReference "SimpleParser" */,
 			);
 			productRefGroup = B942B8F327642CF900F08C78 /* Products */;
 			projectDirPath = "";
@@ -4793,6 +4794,14 @@
 		B99934E1276A2F8800B8B258 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		B9D5CEBE2778FFCE00A6DBE0 /* XCRemoteSwiftPackageReference "SimpleParser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/juliand665/SimpleParser.git";
 			requirement = {
 				branch = main;
 				kind = branch;
