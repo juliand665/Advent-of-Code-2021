@@ -1,5 +1,6 @@
 import AoC_Helpers
 import HandyOperators
+import Collections
 
 // helpful for tracking associated values across functional chains
 @dynamicMemberLookup
@@ -248,32 +249,44 @@ let initial = State(occupation: .init(uniqueKeysWithValues: pods.map { ($0.locat
 
 // TODO: branch and bound
 var knownCosts: [State: Int?] = [:]
-var knownUses = 0
-func minSolutionCost(startingFrom state: State) -> Int? {
-	func compute() -> Int? {
-		state.occupation.values.lazy.flatMap { pod in
-			pod.destinations(in: state).lazy.compactMap { destination in
-				minSolutionCost(
-					startingFrom: state.movingPod(at: pod.location, to: destination.value)
-				).map {
-					$0 + destination.tag * pod.type.costMultiplier
-				}
+
+struct Candidate: Comparable {
+	var state: State
+	var cost: Int
+	
+	static func < (lhs: Self, rhs: Self) -> Bool {
+		lhs.cost < rhs.cost
+	}
+}
+
+var skips = 0
+var checks = 0
+func minSolutionCost(startingFrom initial: State) -> Int? {
+	var toSearch: Heap = [Candidate(state: initial, cost: 0)]
+	var searched: Set<State> = []
+	while let start = toSearch.popMin() {
+		let state = start.state
+		guard !state.isSolved else { return start.cost }
+		guard !searched.contains(state) else { skips += 1; continue }
+		checks += 1
+		searched.insert(state)
+		
+		let reachable = state.occupation.values.lazy.flatMap { pod in
+			pod.destinations(in: state).map { destination in
+				Candidate(
+					state: state.movingPod(at: pod.location, to: destination.value),
+					cost: start.cost + destination.tag * pod.type.costMultiplier
+				)
 			}
-		}.min()
+		}
+		toSearch.insert(contentsOf: reachable)
 	}
 	
-	guard !state.isSolved else { return 0 }
-	
-	return (knownCosts[state] <- { _ in knownUses += 1 }) ?? (compute() <- {
-		knownCosts[state] = $0
-		if knownCosts.count % 1000 == 0 {
-			print(knownCosts.count)
-		}
-	})
+	return nil
 }
 
 measureTime {
 	let minCost = minSolutionCost(startingFrom: initial)!
-	print("known uses:", knownUses)
+	print("skips:", skips, "checks:", checks)
 	print("min cost:", minCost)
 }
