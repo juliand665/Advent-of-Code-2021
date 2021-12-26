@@ -1,6 +1,7 @@
 import AoC_Helpers
 import HandyOperators
 import Collections
+import Darwin
 
 enum AmphipodType: String, CustomStringConvertible {
 	case a = "A"
@@ -33,33 +34,28 @@ typealias Destination = (Location, distance: Int)
 
 struct Amphipod: Hashable {
 	var type: AmphipodType
-	var location: Location
 	var hasMoved = false
 	
-	var isSolved: Bool {
-		guard case .room(let position) = location else { return false }
-		return position.index == type.roomIndex
-	}
-	
-	func destinations(in state: State) -> [Destination] {
+	func destinations(from location: Location, in state: State) -> [Destination] {
 		switch location {
 		case .hallway(let position):
-			let top = RoomPosition(index: type.roomIndex, isTop: true)
+			let top = RoomPosition(roomIndex: type.roomIndex, indexFromTop: 0)
 			let entrance = top.hallwayNeighbor
-			guard
-				state.isFree(top),
-				position.hasPath(to: entrance, in: state)
-			else { return [] }
-			let topWithCost = (top.asLocation, distance: abs(entrance.index - position.index) + 1)
-			let bottom = top.other
-			let bottomWithCost = (bottom.asLocation, topWithCost.distance + 1)
-			return [topWithCost] + (state.isFree(bottom) ? [bottomWithCost] : [])
+			guard position.hasPath(to: entrance, in: state) else { return [] }
+			
+			let room = state.rooms[type.roomIndex]
+			guard room.lazy.compactMap(\.?.type).allSatisfy({ $0 == type }) else { return [] }
+			let indexFromTop = room.lastIndex(of: nil)!
+			let xDistance = abs(entrance.index - position.index)
+			return [(
+				.room(.init(roomIndex: type.roomIndex, indexFromTop: indexFromTop)),
+				distance: xDistance + indexFromTop + 1
+			)]
 		case .room(let position):
 			guard !hasMoved else { return [] }
-			if !position.isTop {
-				guard state.isFree(position.other) else { return [] }
-			}
-			let exitDistance = position.isTop ? 1 : 2
+			let room = state.rooms[position.roomIndex]
+			guard room.prefix(upTo: position.indexFromTop).allNil() else { return [] }
+			let exitDistance = position.indexFromTop + 1
 			return position.hallwayNeighbor
 				.reachableNeighbors(in: state)
 				.map { ($0.asLocation, distance: $1 + exitDistance) }
@@ -94,7 +90,7 @@ struct HallwayPosition: Hashable, LocationConvertible, CustomStringConvertible {
 	
 	var roomNeighbor: RoomPosition? {
 		guard index > 1, index < hallwayLength - 2, index % 2 == 0 else { return nil }
-		return RoomPosition(index: index / 2 - 1, isTop: true)
+		return RoomPosition(roomIndex: index / 2 - 1, indexFromTop: 0)
 	}
 	
 	func reachableNeighbors(in state: State) -> [(Self, distance: Int)] {
@@ -116,82 +112,100 @@ struct HallwayPosition: Hashable, LocationConvertible, CustomStringConvertible {
 }
 
 struct RoomPosition: Hashable, LocationConvertible, CustomStringConvertible {
-	static let all = (0..<roomCount).flatMap { i in
-		[true, false].map { Self(index: i, isTop: $0) }
-	}
-	
-	var index: Int
-	var isTop: Bool
+	var roomIndex: Int
+	var indexFromTop: Int
 	
 	var asLocation: Location { .room(self) }
 	
 	var hallwayNeighbor: HallwayPosition {
-		.init(index: index * 2 + 2)
-	}
-	
-	var other: Self {
-		.init(index: index, isTop: !isTop)
+		.init(index: roomIndex * 2 + 2)
 	}
 	
 	var description: String {
-		"\(index) \(isTop ? "↑" : "↓")"
+		"\(roomIndex) \(indexFromTop)"
 	}
 }
 
 struct State: Hashable, CustomStringConvertible {
-	var occupation: [Location: Amphipod]
+	var hallway: [Amphipod?]
+	var rooms: [[Amphipod?]]
 	
 	var isSolved: Bool {
-		occupation.values.allSatisfy(\.isSolved)
-	}
-	
-	func isFree(_ location: LocationConvertible) -> Bool {
-		occupation[location.asLocation] == nil
-	}
-	
-	func movingPod(at old: Location, to new: Location) -> Self {
-		self <- {
-			assert($0.occupation[new] == nil)
-			$0.occupation[new] = $0.occupation[old].take()! <- {
-				$0.location = new
-				$0.hasMoved = true
+		rooms.enumerated().allSatisfy { roomIndex, pods in
+			pods.allSatisfy {
+				$0?.type.roomIndex == roomIndex
 			}
 		}
 	}
 	
+	init(roomRows: [[AmphipodType]]) {
+		hallway = .init(repeating: nil, count: hallwayLength)
+		rooms = roomRows.transposed().map { $0.map { .init(type: $0) } }
+	}
+	
+	subscript(_ location: LocationConvertible) -> Amphipod? {
+		// compiler crashes if i use _read/_modify here in release mode lol
+		get {
+			switch location.asLocation {
+			case .hallway(let position):
+				return hallway[position.index]
+			case .room(let position):
+				return rooms[position.roomIndex][position.indexFromTop]
+			}
+		}
+		set {
+			switch location.asLocation {
+			case .hallway(let position):
+				hallway[position.index] = newValue
+			case .room(let position):
+				rooms[position.roomIndex][position.indexFromTop] = newValue
+			}
+		}
+	}
+	
+	func isFree(_ location: LocationConvertible) -> Bool {
+		self[location] == nil
+	}
+	
+	func movingPod(at old: Location, to new: Location) -> Self {
+		self <- {
+			assert($0[new] == nil)
+			$0[new] = $0[old].take()! <- {
+				$0.hasMoved = true
+			}
+			//print($0)
+		}
+	}
+	
 	var description: String {
-		"\t" + occupation.values
-			.sorted(on: \.type.rawValue)
-			.map { "\($0.type): \($0.location)" }
-			.joined(separator: ",\t")
+		([hallway] + rooms).map {
+			$0.map { $0?.type.rawValue ?? "·" }.joined()
+		}.joined(separator: ", ")
+	}
+	
+	var withLocations: [(Location, Amphipod)] {
+		hallway.enumerated().compactMap { i, pod in pod.map {
+			(Location.hallway(.init(index: i)), $0)
+		} }
+		+ rooms.enumerated().flatMap { roomIndex, pods in
+			pods.enumerated().compactMap { i, pod in pod.map {
+				(Location.room(.init(roomIndex: roomIndex, indexFromTop: i)), $0)
+			} }
+		}
 	}
 }
 
 
 
-let (topRow, bottomRow) = input()
+let rows = input()
 	.lines()
 	.dropFirst(2)
 	.prefix(2)
 	.map { $0.map(String.init).compactMap(AmphipodType.init) }
-	.bothElements()!
 
-print(topRow)
-print(bottomRow)
+print(rows)
 
-let pods = [
-	(topRow, true),
-	(bottomRow, false),
-].flatMap { types, isTop in
-	types.enumerated().map {
-		Amphipod(
-			type: $1,
-			location: .room(.init(index: $0, isTop: isTop))
-		)
-	}
-}
-
-let initial = State(occupation: .init(uniqueKeysWithValues: pods.map { ($0.location, $0) }))
+let initial = State(roomRows: rows)
 
 var knownCosts: [State: Int?] = [:]
 
@@ -204,22 +218,22 @@ struct Candidate: Comparable {
 	}
 }
 
-var skips = 0
-var checks = 0
-var searched: Set<State> = []
 func minSolutionCost(startingFrom initial: State) -> Int? {
 	var toSearch: Heap = [Candidate(state: initial, cost: 0)]
+	var searched: Set<State> = []
 	while let start = toSearch.popMin() {
 		let state = start.state
-		guard !state.isSolved else { return start.cost }
-		guard !searched.contains(state) else { skips += 1; continue }
-		checks += 1
+		guard !state.isSolved else {
+			print("searched:", searched.count)
+			return start.cost
+		}
+		guard !searched.contains(state) else { continue }
 		searched.insert(state)
 		
-		let reachable = state.occupation.values.lazy.flatMap { pod in
-			pod.destinations(in: state).map { destination, distance in
+		let reachable = state.withLocations.flatMap { location, pod in
+			pod.destinations(from: location, in: state).map { destination, distance in
 				Candidate(
-					state: state.movingPod(at: pod.location, to: destination),
+					state: state.movingPod(at: location, to: destination),
 					cost: start.cost + distance * pod.type.costMultiplier
 				)
 			}
@@ -230,9 +244,24 @@ func minSolutionCost(startingFrom initial: State) -> Int? {
 	return nil
 }
 
+// for testing
+print(initial)
+let progressed = initial
+	.movingPod(at: .room(.init(roomIndex: 2, indexFromTop: 0)), to: .hallway(.init(index: 3)))
+	.movingPod(at: .room(.init(roomIndex: 1, indexFromTop: 0)), to: .hallway(.init(index: 5)))
+	.movingPod(at: .hallway(.init(index: 5)), to: .room(.init(roomIndex: 2, indexFromTop: 0)))
+	.movingPod(at: .room(.init(roomIndex: 1, indexFromTop: 1)), to: .hallway(.init(index: 5)))
+	.movingPod(at: .hallway(.init(index: 3)), to: .room(.init(roomIndex: 1, indexFromTop: 1)))
+	.movingPod(at: .room(.init(roomIndex: 0, indexFromTop: 0)), to: .hallway(.init(index: 3)))
+	.movingPod(at: .hallway(.init(index: 3)), to: .room(.init(roomIndex: 1, indexFromTop: 0)))
+	.movingPod(at: .room(.init(roomIndex: 3, indexFromTop: 0)), to: .hallway(.init(index: 7)))
+	.movingPod(at: .room(.init(roomIndex: 3, indexFromTop: 1)), to: .hallway(.init(index: 9)))
+	.movingPod(at: .hallway(.init(index: 7)), to: .room(.init(roomIndex: 3, indexFromTop: 1)))
+	//.movingPod(at: .hallway(.init(index: 5)), to: .room(.init(roomIndex: 3, indexFromTop: 0)))
+	//.movingPod(at: .hallway(.init(index: 9)), to: .room(.init(roomIndex: 0, indexFromTop: 0)))
+//print()
+
 measureTime {
 	let minCost = minSolutionCost(startingFrom: initial)!
-	print("skips:", skips, "checks:", checks)
-	print(searched.count)
 	print("min cost:", minCost)
 }

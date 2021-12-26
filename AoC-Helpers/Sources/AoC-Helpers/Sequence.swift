@@ -31,6 +31,11 @@ extension Sequence {
 				.map { (lhs, $0.element) }
 		})
 	}
+	
+	@inlinable
+	public func allNil<T>() -> Bool where Element == T? {
+		allSatisfy { $0 == nil }
+	}
 }
 
 extension Sequence where Element: AdditiveArithmetic {
