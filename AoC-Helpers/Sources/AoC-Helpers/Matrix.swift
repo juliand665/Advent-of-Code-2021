@@ -195,3 +195,5 @@ extension Matrix where Element == Bool {
 		map { $0 ? "█" : "·" }
 	}
 }
+
+extension Matrix: Equatable where Element: Equatable {}
