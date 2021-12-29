@@ -58,7 +58,7 @@ struct Amphipod: Hashable {
 			let exitDistance = position.indexFromTop + 1
 			return position.hallwayNeighbor
 				.reachableNeighbors(in: state)
-				.map { ($0.asLocation, distance: $1 + exitDistance) }
+				.map { (Location.hallway($0), distance: $1 + exitDistance) }
 		}
 	}
 }
@@ -66,23 +66,15 @@ struct Amphipod: Hashable {
 let hallwayLength = 11
 let roomCount = 4
 
-protocol LocationConvertible {
-	var asLocation: Location { get }
-}
-
-enum Location: Hashable, LocationConvertible {
+enum Location: Hashable {
 	case hallway(HallwayPosition)
 	case room(RoomPosition)
-	
-	var asLocation: Location { self }
 }
 
-struct HallwayPosition: Hashable, LocationConvertible, CustomStringConvertible {
+struct HallwayPosition: Hashable, CustomStringConvertible {
 	static let all = (0..<hallwayLength).map(Self.init)
 	
 	var index: Int
-	
-	var asLocation: Location { .hallway(self) }
 	
 	var isValidDestination: Bool {
 		index % 2 == 1 || index == 0 || index == hallwayLength - 1
@@ -111,11 +103,9 @@ struct HallwayPosition: Hashable, LocationConvertible, CustomStringConvertible {
 	}
 }
 
-struct RoomPosition: Hashable, LocationConvertible, CustomStringConvertible {
+struct RoomPosition: Hashable, CustomStringConvertible {
 	var roomIndex: Int
 	var indexFromTop: Int
-	
-	var asLocation: Location { .room(self) }
 	
 	var hallwayNeighbor: HallwayPosition {
 		.init(index: roomIndex * 2 + 2)
@@ -143,10 +133,10 @@ struct State: Hashable, CustomStringConvertible {
 		rooms = roomRows.transposed().map { $0.map { .init(type: $0) } }
 	}
 	
-	subscript(_ location: LocationConvertible) -> Amphipod? {
+	subscript(_ location: Location) -> Amphipod? {
 		// compiler crashes if i use _read/_modify here in release mode lol
 		get {
-			switch location.asLocation {
+			switch location {
 			case .hallway(let position):
 				return hallway[position.index]
 			case .room(let position):
@@ -154,7 +144,7 @@ struct State: Hashable, CustomStringConvertible {
 			}
 		}
 		set {
-			switch location.asLocation {
+			switch location {
 			case .hallway(let position):
 				hallway[position.index] = newValue
 			case .room(let position):
@@ -163,8 +153,8 @@ struct State: Hashable, CustomStringConvertible {
 		}
 	}
 	
-	func isFree(_ location: LocationConvertible) -> Bool {
-		self[location] == nil
+	func isFree(_ position: HallwayPosition) -> Bool {
+		self.hallway[position.index] == nil
 	}
 	
 	func movingPod(at old: Location, to new: Location) -> Self {
@@ -242,23 +232,7 @@ print(rows)
 let (topRow, bottomRow) = rows.bothElements()!
 
 let initial = State(roomRows: rows)
-
-// for testing
 print(initial)
-let progressed = initial
-	.movingPod(at: .room(.init(roomIndex: 2, indexFromTop: 0)), to: .hallway(.init(index: 3)))
-	.movingPod(at: .room(.init(roomIndex: 1, indexFromTop: 0)), to: .hallway(.init(index: 5)))
-	.movingPod(at: .hallway(.init(index: 5)), to: .room(.init(roomIndex: 2, indexFromTop: 0)))
-	.movingPod(at: .room(.init(roomIndex: 1, indexFromTop: 1)), to: .hallway(.init(index: 5)))
-	.movingPod(at: .hallway(.init(index: 3)), to: .room(.init(roomIndex: 1, indexFromTop: 1)))
-	.movingPod(at: .room(.init(roomIndex: 0, indexFromTop: 0)), to: .hallway(.init(index: 3)))
-	.movingPod(at: .hallway(.init(index: 3)), to: .room(.init(roomIndex: 1, indexFromTop: 0)))
-	.movingPod(at: .room(.init(roomIndex: 3, indexFromTop: 0)), to: .hallway(.init(index: 7)))
-	.movingPod(at: .room(.init(roomIndex: 3, indexFromTop: 1)), to: .hallway(.init(index: 9)))
-	.movingPod(at: .hallway(.init(index: 7)), to: .room(.init(roomIndex: 3, indexFromTop: 1)))
-	//.movingPod(at: .hallway(.init(index: 5)), to: .room(.init(roomIndex: 3, indexFromTop: 0)))
-	//.movingPod(at: .hallway(.init(index: 9)), to: .room(.init(roomIndex: 0, indexFromTop: 0)))
-//print()
 
 measureTime {
 	let minCost = minSolutionCost(startingFrom: initial)!
